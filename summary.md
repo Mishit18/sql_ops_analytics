@@ -31,10 +31,10 @@
 | category_en                     |   total_orders |   p90_lead_time |   late_rate_pct |
 |:--------------------------------|---------------:|----------------:|----------------:|
 | food                            |            441 |              19 |            10   |
-| construction_tools_lights       |            242 |              19 |             9.1 |
-| construction_tools_construction |            736 |              19 |             9.1 |
 | luggage_accessories             |           1019 |              19 |             5.5 |
-| food_drink                      |            221 |              20 |             6.3 |
+| construction_tools_construction |            736 |              19 |             9.1 |
+| construction_tools_lights       |            242 |              19 |             9.1 |
+| drinks                          |            287 |              20 |             6.6 |
 - High-variability categories where std/mean > 0.5: 43 categories.
 
 ### 3. Seller Performance Scorecard
@@ -110,7 +110,7 @@
 Bottom-decile sellers drive 17.0% of seller-scorecard SLA breaches despite only 8.4% of scored order volume. That concentration puts roughly BRL 2,621,127 of GMV at reliability risk. Introduce a vendor tiering policy with weekly OTDR/review gates, remediation plans for amber sellers, and temporary suppression for sellers below a composite score threshold. A 25% reduction in late orders among this group would prevent about 333 late deliveries over the observed period.
 
 ### Finding 2: Geography and Lead Time Are a Structural SLA Driver
-AL has the highest state breach rate at 23.9% across 397 orders, with average lead time of 24.5 days. Because breach rate correlates with lead time at r = 0.28, long-haul promises should be redesigned. Add regional carrier coverage or adjust SLA promises for the highest-risk state/category lanes. A 20% breach reduction in AL alone would avoid about 19 late orders tied to about BRL 63,451 of GMV exposure.
+AL has the highest state breach rate at 23.9% across 397 orders, with average lead time of 24.5 days. State-level breach rate has a positive, directionally useful relationship with lead time at r = 0.28, so long-haul promises should be redesigned with lane-level testing rather than treated as a blanket national SLA. Add regional carrier coverage or adjust SLA promises for the highest-risk state/category lanes. A 20% breach reduction in AL alone would avoid about 19 late orders tied to about BRL 63,451 of GMV exposure.
 
 ### Finding 3: Retention Drops Immediately After First Purchase
 Average retention falls to month-1 0.47%, month-3 0.25%, and month-6 0.26%. The best month-3 cohort is 2017-03 at 0.4%, while the worst is 2017-01 at 0.1%. Trigger post-delivery re-engagement within 14 days for categories with fast repeat potential and attach freight incentives to second purchase. A 0.5 percentage point lift in month-3 retention implies about 481 incremental repeat orders using the observed orders-per-customer baseline.

@@ -10,7 +10,7 @@ otdr_reporting_month_threshold,100
 bottom_seller_count,63
 bottom_seller_breach_share_pct,17.0
 bottom_seller_order_share_pct,8.4
-state_breach_corr,0.27919443083751977
+state_breach_corr,0.2791944308375198
 state_breach_corr_pvalue,0.15844619877779628
 retention_m1_pct,0.47
 retention_m3_pct,0.25
@@ -21,9 +21,9 @@ best_m3_retention_pct,0.4
 worst_m3_cohort,2017-01
 worst_m3_retention_pct,0.1
 avg_orders_per_customer,1.033422603106588
-average_order_value,159.82579900486664
-ltv_proxy,165.1675932511996
+average_order_value,159.82579900487173
+ltv_proxy,165.16759325120486
 total_orders,96470
-total_gmv,15418394.83
-aov,159.82579900487198
+total_gmv,15418394.830000008
+aov,159.82579900487207
 median_freight_cost,20.415

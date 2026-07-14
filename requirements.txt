@@ -1,4 +1,5 @@
 duckdb
+ipython
 kagglehub
 matplotlib
 nbformat

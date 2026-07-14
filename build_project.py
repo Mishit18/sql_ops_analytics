@@ -475,6 +475,22 @@ def calculate_metrics(con) -> tuple[dict, dict[str, pd.DataFrame]]:
     frames = {
         "otdr": con.execute("SELECT * FROM kpi_otdr_monthly").fetchdf(),
         "lead_category": con.execute("SELECT * FROM kpi_lead_time_category").fetchdf(),
+        "lead_time_detail": con.execute(
+            """
+            SELECT DISTINCT
+                oc.order_id,
+                COALESCE(t.product_category_name_english, p.product_category_name, 'Unknown') AS category_en,
+                oc.actual_lead_time_days
+            FROM orders_clean oc
+            JOIN items i
+                ON oc.order_id = i.order_id
+            JOIN products p
+                ON i.product_id = p.product_id
+            LEFT JOIN translations t
+                ON p.product_category_name = t.product_category_name
+            WHERE oc.actual_lead_time_days IS NOT NULL
+            """
+        ).fetchdf(),
         "seller": con.execute("SELECT * FROM kpi_seller_scorecard").fetchdf(),
         "sla_geo": con.execute("SELECT * FROM kpi_sla_breach_geo").fetchdf(),
         "sla_state": con.execute("SELECT * FROM kpi_sla_breach_state").fetchdf(),
@@ -661,13 +677,8 @@ def save_plots(frames: dict[str, pd.DataFrame], metrics: dict) -> None:
 
     lead = frames["lead_category"].copy()
     top10 = lead.sort_values("total_orders", ascending=False).head(10)["category_en"]
-    # Use a deterministic sample of order-category rows from the saved SQL aggregate by simulating spread from percentiles.
-    violin_rows = []
-    for _, row in lead[lead["category_en"].isin(top10)].iterrows():
-        values = np.array([row["median_lead_time"], row["p75_lead_time"], row["p90_lead_time"], row["p99_lead_time"]])
-        points = np.interp(np.linspace(0, 1, 80), [0, 0.5, 0.8, 1], values)
-        violin_rows.extend({"category_en": row["category_en"], "lead_time_days": p} for p in points)
-    violin_df = pd.DataFrame(violin_rows)
+    violin_df = frames["lead_time_detail"][frames["lead_time_detail"]["category_en"].isin(top10)].copy()
+    violin_df = violin_df.rename(columns={"actual_lead_time_days": "lead_time_days"})
     med_order = lead[lead["category_en"].isin(top10)].sort_values("median_lead_time")["category_en"]
     fig, ax = plt.subplots(figsize=(12, 6))
     sns.violinplot(data=violin_df, y="category_en", x="lead_time_days", order=med_order, ax=ax, palette="viridis", cut=0)
@@ -928,7 +939,7 @@ def write_summary(metrics: dict, frames: dict[str, pd.DataFrame], validation: di
         f"Bottom-decile sellers drive {metrics['bottom_seller_breach_share_pct']:.1f}% of seller-scorecard SLA breaches despite only {metrics['bottom_seller_order_share_pct']:.1f}% of scored order volume. That concentration puts roughly {fmt_money(seller_revenue_at_risk)} of GMV at reliability risk. Introduce a vendor tiering policy with weekly OTDR/review gates, remediation plans for amber sellers, and temporary suppression for sellers below a composite score threshold. A 25% reduction in late orders among this group would prevent about {bottom_seller_reducible_late:,} late deliveries over the observed period.",
         "",
         "### Finding 2: Geography and Lead Time Are a Structural SLA Driver",
-        f"{worst_state['customer_state']} has the highest state breach rate at {worst_state['breach_rate_pct']:.1f}% across {int(worst_state['total_orders']):,} orders, with average lead time of {worst_state['avg_lead_time']:.1f} days. Because breach rate correlates with lead time at r = {metrics['state_breach_corr']:.2f}, long-haul promises should be redesigned. Add regional carrier coverage or adjust SLA promises for the highest-risk state/category lanes. A 20% breach reduction in {worst_state['customer_state']} alone would avoid about {state_reducible_late:,} late orders tied to about {fmt_money(state_revenue_at_risk)} of GMV exposure.",
+        f"{worst_state['customer_state']} has the highest state breach rate at {worst_state['breach_rate_pct']:.1f}% across {int(worst_state['total_orders']):,} orders, with average lead time of {worst_state['avg_lead_time']:.1f} days. State-level breach rate has a positive, directionally useful relationship with lead time at r = {metrics['state_breach_corr']:.2f}, so long-haul promises should be redesigned with lane-level testing rather than treated as a blanket national SLA. Add regional carrier coverage or adjust SLA promises for the highest-risk state/category lanes. A 20% breach reduction in {worst_state['customer_state']} alone would avoid about {state_reducible_late:,} late orders tied to about {fmt_money(state_revenue_at_risk)} of GMV exposure.",
         "",
         "### Finding 3: Retention Drops Immediately After First Purchase",
         f"Average retention falls to month-1 {metrics['retention_m1_pct']:.2f}%, month-3 {metrics['retention_m3_pct']:.2f}%, and month-6 {metrics['retention_m6_pct']:.2f}%. The best month-3 cohort is {metrics['best_m3_cohort']} at {metrics['best_m3_retention_pct']:.1f}%, while the worst is {metrics['worst_m3_cohort']} at {metrics['worst_m3_retention_pct']:.1f}%. Trigger post-delivery re-engagement within 14 days for categories with fast repeat potential and attach freight incentives to second purchase. A 0.5 percentage point lift in month-3 retention implies about {incremental_orders:,} incremental repeat orders using the observed orders-per-customer baseline.",
@@ -953,12 +964,27 @@ def write_notebook() -> None:
     cells.append(nbf.v4.new_markdown_cell("# SQL Operations Analytics: Olist Supply Chain and Customer Operations"))
     cells.append(
         nbf.v4.new_markdown_cell(
-            "This notebook loads the Olist dataset into DuckDB, creates cleaned operational views, computes 8 SQL-first KPIs, and regenerates the dashboard outputs."
+            "This notebook is the reproducible analysis layer for an operations analytics case study on the Olist Brazilian E-Commerce dataset. It creates a DuckDB warehouse, validates the schema, computes 8 SQL-first KPIs, exports dashboard-ready tables, and regenerates the visual outputs used in the project summary."
         )
     )
+    cells.append(nbf.v4.new_markdown_cell("## 1. Rebuild the Analytics Pipeline"))
     cells.append(
         nbf.v4.new_code_cell(
-            "from build_project import ensure_packages, prepare_dirs, find_or_download_dataset, write_sql_files, load_database, run_schema_validation, calculate_metrics, save_kpi_tables, save_plots, write_summary\n"
+            "from pathlib import Path\n"
+            "import pandas as pd\n"
+            "from IPython.display import Image, Markdown, display\n\n"
+            "from build_project import (\n"
+            "    ensure_packages,\n"
+            "    prepare_dirs,\n"
+            "    find_or_download_dataset,\n"
+            "    write_sql_files,\n"
+            "    load_database,\n"
+            "    run_schema_validation,\n"
+            "    calculate_metrics,\n"
+            "    save_kpi_tables,\n"
+            "    save_plots,\n"
+            "    write_summary,\n"
+            ")\n\n"
             "ensure_packages()\n"
             "prepare_dirs()\n"
             "find_or_download_dataset()\n"
@@ -968,12 +994,74 @@ def write_notebook() -> None:
             "metrics, frames = calculate_metrics(con)\n"
             "save_kpi_tables(metrics, frames)\n"
             "save_plots(frames, metrics)\n"
-            "write_summary(metrics, frames, validation)\n"
-            "metrics"
+            "write_summary(metrics, frames, validation)\n\n"
+            "pd.DataFrame([metrics]).T.rename(columns={0: 'value'}).head(25)"
         )
     )
+    cells.append(nbf.v4.new_markdown_cell("## 2. Data Quality Gates"))
+    cells.append(
+        nbf.v4.new_code_cell(
+            "quality = pd.DataFrame({\n"
+            "    'check': [\n"
+            "        'Null order IDs',\n"
+            "        'Items without order record',\n"
+            "        'Clean delivered orders',\n"
+            "        'Raw orders retained (%)',\n"
+            "    ],\n"
+            "    'result': [\n"
+            "        validation['null_order_ids'],\n"
+            "        validation['items_without_order'],\n"
+            "        f\"{validation['orders_clean_rows']:,}\",\n"
+            "        validation['orders_clean_retention_pct'],\n"
+            "    ],\n"
+            "})\n"
+            "quality"
+        )
+    )
+    cells.append(nbf.v4.new_markdown_cell("## 3. KPI Snapshot"))
+    cells.append(
+        nbf.v4.new_code_cell(
+            "snapshot = pd.DataFrame({\n"
+            "    'KPI': [\n"
+            "        'Overall OTDR',\n"
+            "        'Worst operational OTDR month',\n"
+            "        'Bottom-decile seller breach share',\n"
+            "        'Month-1 retention',\n"
+            "        'Month-3 retention',\n"
+            "        'Average order value',\n"
+            "    ],\n"
+            "    'Value': [\n"
+            "        f\"{metrics['overall_otdr_pct']:.2f}%\",\n"
+            "        f\"{metrics['worst_otdr_month']} ({metrics['worst_otdr_pct']:.2f}%)\",\n"
+            "        f\"{metrics['bottom_seller_breach_share_pct']:.1f}%\",\n"
+            "        f\"{metrics['retention_m1_pct']:.2f}%\",\n"
+            "        f\"{metrics['retention_m3_pct']:.2f}%\",\n"
+            "        f\"BRL {metrics['aov']:,.0f}\",\n"
+            "    ],\n"
+            "})\n"
+            "snapshot"
+        )
+    )
+    cells.append(nbf.v4.new_markdown_cell("## 4. Dashboard Preview"))
+    plot_cells = [
+        ("On-Time Delivery Rate Trend", "outputs/plot_01_otdr_trend.png"),
+        ("Seller Reliability Outliers", "outputs/plot_03_seller_scorecard_scatter.png"),
+        ("SLA Breach by State", "outputs/plot_04_sla_breach_choropleth.png"),
+        ("Cohort Retention Heatmap", "outputs/plot_05_cohort_retention_heatmap.png"),
+        ("Freight Efficiency", "outputs/plot_07_freight_efficiency_scatter.png"),
+    ]
+    for title, image_path in plot_cells:
+        cells.append(nbf.v4.new_markdown_cell(f"### {title}"))
+        cells.append(nbf.v4.new_code_cell(f"display(Image(filename='{image_path}'))"))
+    cells.append(nbf.v4.new_markdown_cell("## 5. Operations Findings"))
+    cells.append(
+        nbf.v4.new_code_cell(
+            "display(Markdown(Path('summary.md').read_text(encoding='utf-8').split('## Operational Findings and Recommendations')[1].split('## Resume-Ready Bullets')[0]))"
+        )
+    )
+    cells.append(nbf.v4.new_markdown_cell("## 6. SQL Appendix"))
     for idx, name in enumerate(SQL_FILES, start=0):
-        cells.append(nbf.v4.new_markdown_cell(f"## SQL {idx:02d}: {name}"))
+        cells.append(nbf.v4.new_markdown_cell(f"### SQL {idx:02d}: {name}"))
         cells.append(nbf.v4.new_code_cell(f"print(open('queries/{name}', encoding='utf-8').read())"))
     nb = nbf.v4.new_notebook()
     nb["cells"] = cells
