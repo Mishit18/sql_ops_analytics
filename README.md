@@ -43,6 +43,16 @@ End-to-end SQL-first operations analytics project on the Olist Brazilian E-Comme
 - Python dashboarding with Matplotlib and Seaborn.
 - Business synthesis with quantified operational recommendations.
 
+## Documentation
+
+| File | Purpose |
+|---|---|
+| `summary.md` | Full analysis write-up with KPI results, findings, and resume bullets |
+| `docs/executive_brief.md` | One-page business brief for quick review |
+| `docs/methodology.md` | Metric definitions, grain decisions, quality gates, and assumptions |
+| `docs/data_dictionary.md` | Source table and output table reference |
+| `docs/resume_notes.md` | Resume bullets and interview talking points |
+
 ## KPI Coverage
 
 | KPI | Output |
@@ -78,7 +88,14 @@ sql_ops_analytics/
 |   |-- plot_01_otdr_trend.png
 |   `-- plot_*.png
 |-- docs/
-|   `-- methodology.md
+|   |-- executive_brief.md
+|   |-- methodology.md
+|   |-- data_dictionary.md
+|   `-- resume_notes.md
+|-- scripts/
+|   `-- validate_project.py
+|-- .github/workflows/
+|   `-- validate.yml
 |-- summary.md
 |-- requirements.txt
 |-- LICENSE
@@ -114,6 +131,12 @@ python build_project.py
 ```
 
 The script downloads the Olist dataset through KaggleHub, creates a local DuckDB database, executes all SQL views, exports KPI tables, regenerates plots, updates the notebook, and rewrites `summary.md`.
+
+Validate committed artifacts:
+
+```bash
+python scripts/validate_project.py
+```
 
 ## Data Notes
 
