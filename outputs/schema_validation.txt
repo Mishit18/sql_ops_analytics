@@ -1,0 +1,25 @@
+Null order IDs: 0
+Order date coverage: 2016-09-04 21:15:19 to 2018-10-17 17:30:18
+Items without order record: 0
+orders_clean rows: 96,470
+orders_clean date range: 2016-09-15 12:16:38 to 2018-08-29 15:00:37
+orders_clean retained: 97.01% of original orders
+
+Order status distribution:
+order_status   cnt   pct
+   delivered 96478 97.02
+     shipped  1107  1.11
+    canceled   625  0.63
+ unavailable   609  0.61
+    invoiced   314  0.32
+  processing   301  0.30
+     created     5  0.01
+    approved     2  0.00
+
+Review score distribution:
+ review_score   cnt
+            1 11424
+            2  3151
+            3  8179
+            4 19142
+            5 57328
