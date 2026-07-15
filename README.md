@@ -62,6 +62,7 @@ The app opens an interactive operations control room with KPI cards, state and c
 | `docs/methodology.md` | Metric definitions, grain decisions, quality gates, and assumptions |
 | `docs/data_dictionary.md` | Source table and output table reference |
 | `docs/resume_notes.md` | Resume bullets and interview talking points |
+| `docs/deployment.md` | Streamlit Cloud and Docker deployment instructions |
 | `dashboard/README.md` | Interactive dashboard instructions |
 
 ## KPI Coverage
@@ -102,10 +103,13 @@ sql_ops_analytics/
 |   |-- executive_brief.md
 |   |-- methodology.md
 |   |-- data_dictionary.md
+|   |-- deployment.md
 |   `-- resume_notes.md
 |-- dashboard/
 |   |-- app.py
 |   `-- README.md
+|-- .streamlit/
+|   `-- config.toml
 |-- tests/
 |   `-- test_project_outputs.py
 |-- scripts/
@@ -161,6 +165,8 @@ pytest
 ```
 
 Convenience commands are also available through `make install`, `make build`, `make validate`, `make test`, and `make dashboard`.
+
+Deploy with Streamlit Community Cloud or Docker using `docs/deployment.md`.
 
 ## Data Notes
 

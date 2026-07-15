@@ -73,7 +73,13 @@ def require_file(path: Path, min_bytes: int = 1) -> None:
 
 
 def validate_text_files() -> None:
-    for relative in ["README.md", "summary.md", "docs/methodology.md", "docs/executive_brief.md"]:
+    for relative in [
+        "README.md",
+        "summary.md",
+        "docs/methodology.md",
+        "docs/executive_brief.md",
+        "docs/deployment.md",
+    ]:
         path = ROOT / relative
         require_file(path)
         text = path.read_text(encoding="utf-8")
@@ -120,6 +126,8 @@ def validate_dashboard_and_tests() -> None:
     require_file(ROOT / "dashboard" / "README.md", min_bytes=500)
     require_file(ROOT / "tests" / "test_project_outputs.py", min_bytes=1_000)
     require_file(ROOT / "Makefile", min_bytes=100)
+    require_file(ROOT / "Dockerfile", min_bytes=100)
+    require_file(ROOT / ".streamlit" / "config.toml", min_bytes=100)
 
 
 def validate_notebook() -> None:
