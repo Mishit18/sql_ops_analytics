@@ -17,6 +17,7 @@ SQL Operations Analytics Pipeline for E-Commerce Supply Chain Performance
 - Used DuckDB as an analytical warehouse layer rather than doing KPI logic only in Pandas.
 - Converted operational signals into interventions: seller tiering, carrier coverage tests, SLA redesign, and retention triggers.
 - Treated low-volume months carefully by separating raw KPI tables from narrative reporting thresholds.
+- Added a Streamlit dashboard and automated validation suite so the project can be reviewed interactively and checked reproducibly.
 
 ## Skills Demonstrated
 

@@ -16,6 +16,16 @@ End-to-end SQL-first operations analytics project on the Olist Brazilian E-Comme
 | Month-3 retention | 0.25% |
 | Highest-risk corridor | SP -> MA |
 
+## Interactive Dashboard
+
+Run the Streamlit dashboard locally:
+
+```bash
+streamlit run dashboard/app.py
+```
+
+The app opens an interactive operations control room with KPI cards, state and category filters, seller outlier exploration, cohort retention tables, freight corridor diagnostics, and product velocity views.
+
 ## Dashboard Preview
 
 ### On-Time Delivery Trend
@@ -52,6 +62,7 @@ End-to-end SQL-first operations analytics project on the Olist Brazilian E-Comme
 | `docs/methodology.md` | Metric definitions, grain decisions, quality gates, and assumptions |
 | `docs/data_dictionary.md` | Source table and output table reference |
 | `docs/resume_notes.md` | Resume bullets and interview talking points |
+| `dashboard/README.md` | Interactive dashboard instructions |
 
 ## KPI Coverage
 
@@ -92,6 +103,11 @@ sql_ops_analytics/
 |   |-- methodology.md
 |   |-- data_dictionary.md
 |   `-- resume_notes.md
+|-- dashboard/
+|   |-- app.py
+|   `-- README.md
+|-- tests/
+|   `-- test_project_outputs.py
 |-- scripts/
 |   `-- validate_project.py
 |-- .github/workflows/
@@ -137,6 +153,14 @@ Validate committed artifacts:
 ```bash
 python scripts/validate_project.py
 ```
+
+Run metric consistency tests:
+
+```bash
+pytest
+```
+
+Convenience commands are also available through `make install`, `make build`, `make validate`, `make test`, and `make dashboard`.
 
 ## Data Notes
 

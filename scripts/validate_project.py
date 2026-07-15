@@ -46,6 +46,7 @@ REQUIRED_OUTPUTS = [
     "velocity.csv",
     "freight.csv",
     "corridors.csv",
+    "lead_time_detail.csv",
 ]
 
 FORBIDDEN_TERMS = [
@@ -114,6 +115,13 @@ def validate_outputs() -> None:
         raise AssertionError("Delivered order count fell below quality threshold")
 
 
+def validate_dashboard_and_tests() -> None:
+    require_file(ROOT / "dashboard" / "app.py", min_bytes=5_000)
+    require_file(ROOT / "dashboard" / "README.md", min_bytes=500)
+    require_file(ROOT / "tests" / "test_project_outputs.py", min_bytes=1_000)
+    require_file(ROOT / "Makefile", min_bytes=100)
+
+
 def validate_notebook() -> None:
     path = ROOT / "sql_ops_analytics.ipynb"
     require_file(path, min_bytes=1_000)
@@ -127,6 +135,7 @@ def main() -> None:
     validate_text_files()
     validate_sql_files()
     validate_outputs()
+    validate_dashboard_and_tests()
     validate_notebook()
     print("Project validation passed.")
 

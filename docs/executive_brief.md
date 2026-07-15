@@ -31,6 +31,10 @@ Build a SQL-first operations analytics pipeline for Olist e-commerce orders, the
 3. Repeat-order intervention: launch post-delivery re-engagement and second-purchase freight incentives.
 4. Freight corridor management: prioritize SP -> MA and similar lanes for consolidation or carrier renegotiation.
 
+## Interactive Review
+
+The Streamlit dashboard turns the static analysis into a filterable operations control room. Reviewers can adjust seller order thresholds, filter customer states, inspect category lead-time patterns, compare seller outliers, and prioritize freight corridors without rerunning the full build.
+
 ## Quantified Recommendations
 
 - Reduce late deliveries among bottom-decile sellers by 25%, preventing about 333 late deliveries over the observed period.

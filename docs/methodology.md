@@ -66,3 +66,16 @@ python build_project.py
 ```
 
 The pipeline rebuilds the SQL layer, recalculates metrics, exports CSVs, regenerates plots, updates `summary.md`, and refreshes the notebook.
+
+Validate committed outputs:
+
+```bash
+python scripts/validate_project.py
+pytest
+```
+
+Explore the dashboard:
+
+```bash
+streamlit run dashboard/app.py
+```
