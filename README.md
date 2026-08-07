@@ -59,6 +59,7 @@ The app opens an interactive operations control room with KPI cards, state and c
 |---|---|
 | `summary.md` | Full analysis write-up with KPI results, findings, and resume bullets |
 | `docs/executive_brief.md` | One-page business brief for quick review |
+| `docs/ats_screening_pack.md` | Role mapping, ATS keywords, resume bullets, and interview defenses |
 | `docs/methodology.md` | Metric definitions, grain decisions, quality gates, and assumptions |
 | `docs/data_dictionary.md` | Source table and output table reference |
 | `docs/resume_notes.md` | Resume bullets and interview talking points |
