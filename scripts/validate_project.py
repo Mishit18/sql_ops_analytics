@@ -79,6 +79,7 @@ def validate_text_files() -> None:
         "docs/methodology.md",
         "docs/executive_brief.md",
         "docs/deployment.md",
+        "docs/business_casebook.md",
     ]:
         path = ROOT / relative
         require_file(path)

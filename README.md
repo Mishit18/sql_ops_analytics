@@ -159,6 +159,14 @@ Validate committed artifacts:
 python scripts/validate_project.py
 ```
 
+Reviewer-facing business casebook:
+
+```text
+docs/business_casebook.md
+```
+
+It converts the SQL outputs into operating decisions across SLA intervention, seller prioritization, retention, freight efficiency, and weekly business review dashboards.
+
 Run metric consistency tests:
 
 ```bash

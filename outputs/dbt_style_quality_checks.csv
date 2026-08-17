@@ -1,0 +1,5 @@
+table,rows,columns,duplicate_rows,null_cells,status
+otdr,23,7,0,1,pass
+seller,627,11,0,0,pass
+cohort,181,5,0,0,pass
+corridors,49,8,0,0,pass
