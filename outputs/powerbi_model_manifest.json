@@ -1,0 +1,18 @@
+{
+  "source": "Olist Brazilian E-Commerce public dataset",
+  "model": "Power BI-ready star schema",
+  "grain": {
+    "fact_orders": "one row per delivered or operational order",
+    "fact_order_items": "one row per order item"
+  },
+  "rows": {
+    "fact_orders": 96470,
+    "fact_order_items": 110189,
+    "dim_customers": 96219,
+    "dim_sellers": 3095,
+    "dim_products": 32951,
+    "dim_dates": 714
+  },
+  "quality_checks_passed": 7,
+  "quality_checks_total": 7
+}

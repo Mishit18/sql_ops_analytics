@@ -1,0 +1,8 @@
+check,status
+fact_orders_order_id_unique,pass
+fact_orders_order_id_not_null,pass
+fact_items_composite_key_unique,pass
+fact_items_order_fk_valid,pass
+late_flag_binary,pass
+nonnegative_price,pass
+nonnegative_freight,pass

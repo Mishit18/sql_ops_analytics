@@ -1,0 +1,48 @@
+-- Core volume and service measures
+Total Orders := DISTINCTCOUNT(FactOrders[order_id])
+
+Delivered Orders :=
+CALCULATE([Total Orders], FactOrders[order_status] = "delivered")
+
+Late Orders :=
+CALCULATE([Total Orders], FactOrders[is_late] = 1)
+
+OTDR % :=
+DIVIDE([Delivered Orders] - [Late Orders], [Delivered Orders])
+
+SLA Breach Rate % :=
+DIVIDE([Late Orders], [Delivered Orders])
+
+Average Lead Time Days := AVERAGE(FactOrders[actual_lead_time_days])
+
+P90 Lead Time Days :=
+PERCENTILEX.INC(
+    FILTER(FactOrders, NOT ISBLANK(FactOrders[actual_lead_time_days])),
+    FactOrders[actual_lead_time_days],
+    0.90
+)
+
+Average Review Score := AVERAGE(FactOrders[review_score])
+
+-- Commercial and freight measures
+GMV := SUM(FactOrderItems[price])
+
+Freight Cost := SUM(FactOrderItems[freight_value])
+
+Freight as % of GMV := DIVIDE([Freight Cost], [GMV])
+
+Average Order Value := DIVIDE([GMV], [Total Orders])
+
+Orders per Customer :=
+DIVIDE([Total Orders], DISTINCTCOUNT(FactOrders[customer_id]))
+
+-- Period comparisons for management review
+OTDR Prior Month % :=
+CALCULATE([OTDR %], DATEADD(DimDates[full_date], -1, MONTH))
+
+OTDR MoM Change pp := ([OTDR %] - [OTDR Prior Month %]) * 100
+
+GMV Prior Month :=
+CALCULATE([GMV], DATEADD(DimDates[full_date], -1, MONTH))
+
+GMV MoM % := DIVIDE([GMV] - [GMV Prior Month], [GMV Prior Month])

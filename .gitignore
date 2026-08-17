@@ -6,6 +6,7 @@ venv/
 
 # Local dataset and generated database
 data/
+bi/data/*.csv
 *.duckdb
 *.duckdb.wal
 

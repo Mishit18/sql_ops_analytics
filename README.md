@@ -51,6 +51,7 @@ The app opens an interactive operations control room with KPI cards, state and c
 - Supply-chain analytics: OTDR, SLA breach, lead time, seller reliability, freight efficiency, and product velocity.
 - Customer operations analytics: cohort retention and repeat-order economics.
 - Python dashboarding with Matplotlib and Seaborn.
+- Power BI-ready star schema, DAX measures, refresh checks, and five-page report specification.
 - Business synthesis with quantified operational recommendations.
 
 ## Documentation
@@ -172,6 +173,14 @@ Run metric consistency tests:
 ```bash
 pytest
 ```
+
+Generate the Power BI-ready semantic layer and refresh evidence:
+
+```bash
+python scripts/build_powerbi_model.py
+```
+
+See `bi/power_bi/README.md` for the relationship model, DAX measure pack, report pages, and claim boundaries.
 
 Convenience commands are also available through `make install`, `make build`, `make validate`, `make test`, and `make dashboard`.
 
