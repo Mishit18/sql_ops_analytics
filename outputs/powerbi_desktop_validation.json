@@ -1,0 +1,20 @@
+{
+  "validated_at": "2026-08-18",
+  "environment": "Power BI Desktop",
+  "dataset": "Olist Brazilian E-Commerce public dataset",
+  "semantic_model": {
+    "fact_tables": 2,
+    "dimension_tables": 4,
+    "dax_measures_recognized": 17,
+    "quality_checks_passed": 8,
+    "quality_checks_total": 8
+  },
+  "dax_query_result": {
+    "orders": 96470,
+    "otdr": 0.9188763346117964,
+    "sla_breach_rate": 0.08112366538820359,
+    "gmv_brl": 13220248.930000005,
+    "freight_brl": 2198145.9
+  },
+  "claim_boundary": "Validated semantic model and KPI measures; no Power BI Service deployment claimed."
+}

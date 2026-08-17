@@ -36,6 +36,8 @@ Use explicit one-to-many relationships and avoid bidirectional filters. Mark `Di
 
 Copy the measures from `measures.dax`, format rates as percentages, and use drill-through from seller and state views to order-level evidence.
 
-## Defensible resume wording
+## Power BI Desktop validation
 
-Until a report is opened and verified in Power BI Desktop, describe this artifact as a **Power BI-ready star schema and DAX measure pack**, not as a deployed Power BI dashboard.
+The semantic model was opened and queried in Power BI Desktop on 18 August 2026. Power BI recognized all 17 DAX measures and returned 96,470 orders, 91.89% OTDR, 8.11% SLA breach rate, BRL 13.22M GMV, and BRL 2.20M freight cost. The aggregate validation record is committed at `outputs/powerbi_desktop_validation.json`.
+
+Defensible resume wording: **Built a Power BI semantic model with 17 DAX measures; validated OTDR, SLA, GMV, and freight KPIs.** This repository does not claim a deployed Power BI Service dashboard.
