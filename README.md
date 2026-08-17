@@ -18,6 +18,8 @@ End-to-end SQL-first operations analytics project on the Olist Brazilian E-Comme
 
 ## Interactive Dashboard
 
+Recruiter-facing static evidence: `https://mishit18.github.io/sql_ops_analytics/`
+
 Run the Streamlit dashboard locally:
 
 ```bash
@@ -178,6 +180,7 @@ Generate the Power BI-ready semantic layer and refresh evidence:
 
 ```bash
 python scripts/build_powerbi_model.py
+python scripts/build_public_evidence_site.py
 ```
 
 See `bi/power_bi/README.md` for the relationship model, DAX measure pack, report pages, and claim boundaries.
